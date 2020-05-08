@@ -51,3 +51,19 @@ Route::resource('zoneRencontrees', 'ZoneRencontreeController');
 Route::resource('vertues', 'VertueController');
 
 Route::resource('partieUtilisees', 'PartieUtiliseeController');
+
+Route::post('/search_vertues/', 'VertueController@searchVertues')->name('search_vertues');
+
+Route::get('/search_vertues/', 'VertueController@searchVertues')->name('search_vertues');
+
+Route::name('language')->get('language/{lang}', 'HomeController@language');
+
+//Route::post('/search','VertueController@search')->name('search-vertue');
+
+//Route::resource('search_vertues', 'VertueController');
+
+/*
+Route::prefix('vertues')->group(function(){
+	Route::get('search_vertues',['uses'=>'VertueController@search_vertues', 'as'=>'vertues_search']); 
+});
+*/

@@ -124,7 +124,6 @@ class Plante extends Model
      */
     public static $rules = [
         'nomScientifique' => 'required',
-        'nomFulfulde' => 'required',
         'enDanger' => 'required',
         'photo' => 'required'
     ];
@@ -134,7 +133,7 @@ class Plante extends Model
      **/
     public function zoneRencontrees()
 	{
-		return $this->belongsToMany('App\Models\ZoneRencontree');
+		return $this->belongsToMany('App\Models\ZoneRencontree','plante_zonerencontree');
 	}
 
     /**

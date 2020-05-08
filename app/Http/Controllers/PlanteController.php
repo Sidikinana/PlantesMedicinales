@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\PlanteDataTable;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Requests\CreatePlanteRequest;
 use App\Http\Requests\UpdatePlanteRequest;
 use App\Repositories\PlanteRepository;
@@ -22,10 +23,10 @@ class PlanteController extends AppBaseController
     private $zoneRepository;
     //use ImageUpload;
 
-    public function __construct(PlanteRepository $planteRepo, ZoneRencontreeRepository $zoneRepo)
+    public function __construct(PlanteRepository $planteRepo, ZoneRencontreeRepository $zoneRencontreeRepo)
     {
         $this->planteRepository = $planteRepo;
-        $this->zoneRepository = $zoneRepo;
+         $this->zoneRencontreeRepository = $zoneRencontreeRepo;
     }
 
     /**
@@ -34,9 +35,10 @@ class PlanteController extends AppBaseController
      * @param PlanteDataTable $planteDataTable
      * @return Response
      */
-    public function index(PlanteDataTable $planteDataTable)
+    public function index(Request $request)
     {
-        return $planteDataTable->render('plantes.index');
+        $plantes = $this->planteRepository->all();
+        return view('plantes.index')->with('plantes',$plantes);
     }
 
     /**
@@ -46,8 +48,8 @@ class PlanteController extends AppBaseController
      */
     public function create()
     {
-        $zones = $this->zoneRepository->all();
-        return view('plantes.create')->with('zones',$zones);
+        $zoneRencontrees = $this->zoneRencontreeRepository->all();
+        return view('plantes.create')->with('zoneRencontrees',$zoneRencontrees);
     }
 
     use ImageUpload; //Using our created Trait to access inside trait method
@@ -79,9 +81,15 @@ class PlanteController extends AppBaseController
         }
 
         $plante = $this->planteRepository->create($input);
-        foreach ($input['regionRencontrees'] as $zone_id) {
+        foreach ($request->all('zoneRencontrees') as $zone_id){
+            //$zone = $this->zoneRencontreeRepository->find($zone_id);
             $plante->zoneRencontrees()->attach($zone_id);
+            
         }
+
+        /*($requete->all('zoneRencontrees') as $zone_id) {
+        $plante->zoneRencontrees()->attach($zone_id);
+        }*/
 
         Flash::success('Plante saved successfully.');
 

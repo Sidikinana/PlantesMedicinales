@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\Vertue;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Column;
 
 class VertueDataTable extends DataTable
 {
@@ -29,7 +30,7 @@ class VertueDataTable extends DataTable
      */
     public function query(Vertue $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['plante','partieutilisee','regionpratiquee']);
     }
 
     /**
@@ -48,10 +49,10 @@ class VertueDataTable extends DataTable
                 'stateSave' => true,
                 'order'     => [[0, 'desc']],
                 'buttons'   => [
-                    ['extend' => 'create', 'className' => 'btn btn-default btn-sm no-corner',],
+                    /* ['extend' => 'create', 'className' => 'btn btn-default btn-sm no-corner',],*/
                     ['extend' => 'export', 'className' => 'btn btn-default btn-sm no-corner',],
                     ['extend' => 'print', 'className' => 'btn btn-default btn-sm no-corner',],
-                    ['extend' => 'reset', 'className' => 'btn btn-default btn-sm no-corner',],
+                   /* ['extend' => 'reset', 'className' => 'btn btn-default btn-sm no-corner',],*/
                     ['extend' => 'reload', 'className' => 'btn btn-default btn-sm no-corner',],
                 ],
             ]);
@@ -68,9 +69,9 @@ class VertueDataTable extends DataTable
             'nomVertue',
             'recette',
             'utilisation',
-            'plante_id',
-            'regionPratiquee_id',
-            'partieUtilisee_id'
+            'plante_id' => new Column([ 'title' => 'Plante', 'data' => 'plante.nomScientifique']),
+            'regionPratiquee_id' => new Column([ 'title' => 'Region Pratiquée', 'data' => 'regionpratiquee.nomRegion']),
+            'partieUtilisee_id' => new Column([ 'title' => 'Partie utilisée', 'data' => 'partieutilisee.nomPartie'])
         ];
     }
 
