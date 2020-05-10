@@ -1,49 +1,29 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>Plantes Medecinales</title>
-
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="../public/css/search.css">
-
-        <!-- Styles -->
-        <style>
-            /*html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }*/
-
-            .full-height {
-                height: 93vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="colorlib.com">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <title>Plantes Medecinales</title>
+  </head>
+<style>
             .top-right {
                 position: absolute;
                 right: 10px;
                 top: 18px;
+
             }
 
-            .content {
+           .ino {
+                position: justify;
                 text-align: center;
+                right: 10px;
+                top: 18px;
+
             }
+
 
             .links > a {
                 color: #636b6f;
@@ -54,66 +34,12 @@
                 text-decoration: none;
                 text-transform: uppercase;
             }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-
-            @import url(https://fonts.googleapis.com/css?family=Open+Sans);
-
-            body{
-              background: #f2f2f2;
-              font-family: 'Open Sans', sans-serif;
-            }
-
-            .search {
-              width: 100%;
-              position: relative;
-              display: flex;
-            }
-
-            .searchTerm {
-              width: 100%;
-              border: 2px solid grey;
-              border-right: none;
-              padding: 5px;
-              height: 20px;
-              border-radius: 5px 0 0 5px;
-              outline: none;
-              color: #9DBFAF;
-            }
-
-            .searchTerm:focus{
-              color: #00B4CC;
-            }
-
-            .searchButton {
-              width: 20%;
-              height: 33px;
-              border: 2px solid #00b4cc;
-              background: #00b4cc;
-              text-align: center;
-              color: #fff;
-              border-radius: 0 5px 5px 0;
-              cursor: pointer;
-              font-size: 20px;
-            }
-            /*Resize the wrap to see the search bar change!*/
-            .wrap{
-              width: 40%;
-              position: absolute;
-              top: 30%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            }
+  </style>
 
 
-
-
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
+  <body>
+    
+    <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
@@ -127,30 +53,47 @@
                     @endauth
                 </div>
             @endif
-
-            {{form::open(['method'=>'get', 'route'=>'search_vertues'])}}
-            {{form::text('query', $text)}}
-            {{form::submit('Rechercher')}}
-            {{form::close()}}
-
-            <!-- <form class="form-inline" method="POST" action="{{ route('search_vertues') }}">
+      <div >
+    <div class="s130">
+      <form class="form-inline" method="GET" action="{{ route('search_vertues') }}">
             @csrf
-            <div class="form-group row">
-                <label for="searchTerm" class="col-sm-4 col-form-label">Search term</label>
-                <div class="col-sm-6">
-                    <input name="text" class="form-control" id="searchTerm" placeholder="Batman">
-                </div>
+        <div class="inner-form">
+          <div class="input-field first-wrap">
+            <div class="svg-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+              </svg>
             </div>
-            <div class="form-group row" style="margin-left: 10px">
-                <button type="submit" id="searchButton" style="margin-left: 20%" class="btn btn-primary">Search</button>
-            </div>
-        </form> -->
-
-
+            <!-- <input id="search" type="text" placeholder="Rechercher....." /> -->
+            <input name="text" class="form-control" id="searchTerm" placeholder="Rechercher.....">
+          </div>
+          <div class="input-field second-wrap">
+            <button class="btn-search" id="searchButton" type="submit">Rechercher</button>
+          </div>
         </div>
+        <span class="info">ex. Maux, Dents, Ventre, Baobab........</span>
+      </form>
+    </div>
+
+    <div class="ino">
+          @if(isset($resultat['hits']['hits'][0]))
+            @foreach($resultat['hits']['hits'] as $vertue)
+              Vertue: <a href="{{ route('details', $vertue) }}">{!! $vertue['_source']['nomVertue'] !!}</a> <br>
+              Recette: {!! $vertue['_source']['recette'] !!} <br>
+              Plante: {!! $vertue['_source']['plantes']['nomScientifique'] !!} <br>
+              Image: <img src="{!! asset ("storage".$vertue['_source']['plantes']['photo']) !!}">
+              <br>
+              <br>
+            @endforeach
+          @else
+            Pas de résultat
+          @endif
+    </div>
+</div>
         <footer class="main-footer" style="max-height: 100px;text-align: center">
             <strong>Copyright © 2020 <a href="http://incubuo.tech/" target="_blank">INCUB@UO</a></strong> Tous droits réservés.
         </footer>
 
-    </body>
+    <script src="js/extention/choices.js"></script>
+  </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

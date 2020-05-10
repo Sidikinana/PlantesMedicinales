@@ -21,7 +21,7 @@ class PlanteController extends AppBaseController
     /** @var  PlanteRepository */
     private $planteRepository;
     private $zoneRepository;
-    //use ImageUpload;
+    use ImageUpload;
 
     public function __construct(PlanteRepository $planteRepo, ZoneRencontreeRepository $zoneRencontreeRepo)
     {
@@ -52,7 +52,7 @@ class PlanteController extends AppBaseController
         return view('plantes.create')->with('zoneRencontrees',$zoneRencontrees);
     }
 
-    use ImageUpload; //Using our created Trait to access inside trait method
+    //use ImageUpload; //Using our created Trait to access inside trait method
     /**
      * Store a newly created Plante in storage.
      *
@@ -126,6 +126,7 @@ class PlanteController extends AppBaseController
     public function edit($id)
     {
         $plante = $this->planteRepository->find($id);
+        $zoneRencontrees = $this->zoneRencontreeRepository->all();
 
         if (empty($plante)) {
             Flash::error('Plante not found');
@@ -133,7 +134,7 @@ class PlanteController extends AppBaseController
             return redirect(route('plantes.index'));
         }
 
-        return view('plantes.edit')->with('plante', $plante);
+        return view('plantes.edit')->with('plante', $plante)->with('zoneRencontrees',$zoneRencontrees);
     }
 
     /**
@@ -153,8 +154,33 @@ class PlanteController extends AppBaseController
 
             return redirect(route('plantes.index'));
         }
+        $input = $request->all();
 
-        $plante = $this->planteRepository->update($request->all(), $id);
+        // Check if a profile image has been uploaded
+        if ($request->has('photo')) {
+            // Get image file
+            $image = $request->file('photo');
+            // Make a image name based on user name and current timestamp
+            $name = Str::slug('_'.time());
+            // Define folder path
+            $folder = '/uploads/images/';
+            // Make a file path where image will be stored [ folder path + file name + file extension]
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            // Upload image
+            $this->uploadOne($image, $folder, 'public', $name);
+            // Set user profile image path in database to filePath
+            $input["photo"] = $filePath;
+        }
+
+        $plante = $this->planteRepository->update($input, $id);
+   
+        $plante->zoneRencontrees()->detach();
+        
+        foreach ($request->all('zoneRencontrees') as $zone_id){
+            //$zone = $this->zoneRencontreeRepository->find($zone_id);
+            $plante->zoneRencontrees()->attach($zone_id);
+            
+        }
 
         Flash::success('Plante updated successfully.');
 

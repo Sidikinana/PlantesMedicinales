@@ -18,7 +18,7 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
 use Elasticsearch\ClientBuilder;
-
+use IlluminateDatabaseEloquentCollection;
 use Illuminate\Http\Request;
 
 
@@ -253,50 +253,31 @@ use App\Events\NewVertueEvent;
                 'index' => 'vertues',
                 'type' => 'vertues',
                 'body' => [
-                    'sort' => [
-                        '_score'
-                    ],
-                    'query' => [
-                        'bool' => [
-                            'should' => [
-                                ['match' => [
-                                    'nomVertue' => [
-                                        'query'     => $text,
-                                        'fuzziness' => '1'
-                                    ]
-                                ]],
-
-                                ['match' => [
-                                    'recette' => [
-                                        'query'     => $text,
-                                        'fuzziness' => '0'
-                                    ]
-                                ]],
-
-                                ['match' => [
-                                    'nomPartie' => [
-                                        'query'     => $text,
-                                        'fuzziness' => '0'
-                                    ]
-                                ]],
-
-                                ['match' => [
-                                    'utlisation' => [
-                                        'query'     => $text,
-                                        'fuzziness' => '0'
-                                    ]
-                                ]]
-                            ]
+                'query' => [
+                    'multi_match' => [
+                        'fields' => ['nomVertue', 'recette', 'utilisation','plantes.nomScientifique', 'plantes.espece', 'plantes.famille', 'plantes.nomMoore', 'plantes.nomDioula', '   
+plantes.nomFulfulde', 'plantes.zone_rencontrees.nomzone', '   
+nomPartie', 'regionPratiquees.nomRegion'],
+                        'query' => $text,
                         ],
                     ],
-                ]
+                ],
             ];
     
             $data = $this->client->search($params);
+            //$result=json_decode($data);
             //return $data;
-            if($data)
-                return view('welcome');
+            /*if($data)
+                    //return $data['hits']['hits'][0]['_source']['nomVertue'];
+                return $data;
             else
-                print("Non okkkk");
+               print("Non okkkk");*/
+            return view('welcome')->with('resultat',$data);
+
+        }
+
+        function details($vertue){
+            return view('details');
         }
     }
+
