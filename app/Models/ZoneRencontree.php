@@ -56,7 +56,7 @@ class ZoneRencontree extends Model
 {
     use SoftDeletes;
 
-    public $table = 'zonerencontrees';
+    public $table = 'zoneRencontrees';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
