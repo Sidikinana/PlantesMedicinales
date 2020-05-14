@@ -133,7 +133,7 @@ class Plante extends Model
      **/
     public function zoneRencontrees()
 	{
-		return $this->belongsToMany('App\Models\ZoneRencontree','plante_zonerencontree');
+		return $this->belongsToMany('App\Models\ZoneRencontree','plante_zoneRencontree');
 	}
 
     /**
